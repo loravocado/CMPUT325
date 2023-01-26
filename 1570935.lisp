@@ -236,7 +236,7 @@ Testcases:
 
 What the function does: If a website A contains a link to another website B, it is represented by (A B). Given a list of links L, this function returns a list of web pages that can be reached from x
 
-How it works: It calls iterate list with an empty list, the original x that was passed in, a temporary storage of the current x, current L, and the original L
+How it works: It calls gen-connections with an empty list, the original x that was passed in, a temporary storage of the current x, current L, and the original L
 
 Test cases:
 > (reached 'google '( (google shopify) (google aircanada) (amazon aircanada)))
@@ -253,7 +253,7 @@ Test cases:
 |#
 
 (defun reached (x L)
-    (iterate-list '() x x L L)
+    (gen-connections '() x x L L)
 )
 
 #| Helper function
@@ -370,7 +370,7 @@ How it works: It flattens the given list L and creates a list with only the even
 )
 
 #| Helper function
-How it works: It counts how many links that are of E are in L. It uses similar logic to that in the function occurs. It iterates through the list until it finds a value where E is the same as the value in L and then returns one. Otherwise it returns 0. At the end it adds up all the 1's and 0's
+How it works: It counts how many links that are of E are in L. It uses similar logic to that in the function occurs. It recurses through the list until it finds a value where E is the same as the value in L and then returns one. Otherwise it returns 0. At the end it adds up all the 1's and 0's
 |#
 
 (defun count-links (E L)
