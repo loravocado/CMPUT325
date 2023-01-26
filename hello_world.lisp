@@ -217,41 +217,81 @@
     )
 )
 
-;QUESTION 7
+;QUESTION 7A
 
-;; (defun return_connection (x L)
-;;     (if (> (occurs x L) 0)
-;;         (if (eq (car L) x)
-;;             (car (cdr L))
-;;             (car L)
-;;         )
-;;     )
-;; )
-
-;; (defun reached (x L)
-;;     (if (return_connection x (car L))
-;;         (cons (return_connection x (car L)) (reached x (cdr L)))
-;;     )
-;; )
-
-(defun is_equal_to (L0 L1 L2)
-    (if (occurs L0 (car L1))
-        (car L2)
-        (if (eq x (car L2))
-            (car L1)
-        )
+(defun checker (a L)
+    (if (eq a (car L))
+        (car (cdr L))
     )
 )
 
-(defun combine_list (x L1 L2)
-    (if L1  
-        (if (is_equal_to x L1 L2)
-            (cons (is_equal_to x L1 L2) (combine_list x (cdr L1) (cdr L2)))
-            (combine_list x (cdr L1) (cdr L2))
+
+;Checks if x has a connection in L and adds to L1 if it does
+(defun iterate-list (L1 a x L original-L)
+    (if (null L)
+        L1
+        (let ((c (checker a (car L))))
+            (if (and (not (eq x c)) (and c (not (eq c a))))
+                (append (iterate-list (append L1 (list c)) a x (cdr L) original-L) (iterate-list '() c x original-L original-L))
+                (iterate-list L1 a x (cdr L) original-L)
+            )
         )
     )
 )
 
 (defun reached (x L)
-    (combine_list x (car (split (xflatten L))) (car (cdr (split (xflatten L)))))
+    (iterate-list '() x x L L)
 )
+
+;QUESTION 7B
+
+(defun create-empty-subsets (S)
+    (if S
+        (cons (list (car S) nil) (create-empty-subsets (cdr S)))
+    )
+)
+
+(defun count-occurrence (A L)
+    (if A 
+        (occurs (car (car A)) (get_even(xflatten L)))
+    )
+)
+
+(defun count-duplicates (E L B)
+    (if (and L B)
+        (if (equal E L) 1 0)
+        ;add up the 1's and 0's that result from recursively calling the list
+        (+ (count-duplicates E (car L) t) (count-duplicates E (cdr L) NIL))))
+
+(defun remove-unwanted-elements (L)
+    (if L
+        (if (eq (car (car L)) ((car (cdr (car L)))))
+            (remove-unwanted-elements (cdr L))
+            (if (< 0 (get-count-of-link (car L) (cdr L)))
+                (remove-duplicate-links (cdr L))
+                (cons (car L) (remove-unwanted-elements (cdr L)))
+            )
+        )
+    )
+)
+
+(defun mySort (L)
+    (sort L 'greaterThan))
+
+(defun greaterThan (L1 L2)
+    (> (cadr L1) (cadr L2)))
+
+(defun insert-reference-count (A L)
+    (if (car A)
+        (cons (append (car A) (list(count-occurrence A L))) (insert-reference-count (cdr A) L))
+    )
+)
+
+;; (defun )
+
+( defun rank (S L))
+
+(print(create-empty-subsets '(A B C)))
+(print (insert-reference-count '((A) (B) (C)) '((a b) (a a) (B A))))
+(print (occurs ))
+;; (print (rank '(google shopify aircanada amazon) '((google shopify) (google aircanada) (amazon aircanada))))
