@@ -1,7 +1,7 @@
 % Lora Ma
 % ID: 1570935
 % CMPUT 325 LEC B1
-% Assignment 1
+% Assignment 3
 
 % Question 1
 
