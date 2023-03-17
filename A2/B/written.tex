@@ -1,0 +1,206 @@
+\documentclass[8pt, letterpaper, titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{color,graphicx,overpic} 
+\usepackage{fancyhdr}
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{float}
+\usepackage{blindtext}
+\usepackage{longtable}
+\usepackage{scrextend}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{calc}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage[normalem]{ulem}
+\usepackage{tabularx}
+\usepackage{mathrsfs}
+\usepackage{bookmark}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{ltablex}
+\usepackage{enumitem}
+\usepackage[simplified]{pgf
+-umlcd}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{listings}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=false,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\mathtoolsset{showonlyrefs}  
+\allowdisplaybreaks
+
+\definecolor{mycolor}{rgb}{0, 0, 0}
+
+\geometry{top=2.54cm, left=2.54cm, right=2.54cm, bottom=2.54cm}
+
+% Indentation/space between paragraphs
+\setlength{\headheight}{15pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Line spacing
+\renewcommand{\baselinestretch}{1.5} 
+
+% Line spacing
+\renewcommand{\baselinestretch}{1.3} 
+
+% Title page
+\title{\textbf{\Huge{ 
+\begin{center}
+MATE 201\\ \large{Class notes} % Document name
+\end{center} 
+}}}
+
+\author{Lora Ma}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{\textit{CMPUT 325 Quiz (Part of Assignment 2)}}
+\rfoot{}
+
+% Hyperlink colors
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue,
+}
+
+\begin{document}
+
+\section*{Part A}
+
+\subsection*{Q1.}
+Normal order reduction:
+\begin{align}
+    &(\lambda xyz \mid xz(yyz)) (\lambda x \mid x) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda x \mid(\lambda yz \mid xz(yyz))) (\lambda x \mid x) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda x \mid (\lambda y \mid(\lambda z \mid xz(yyz)))) (\lambda x \mid x) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda y \mid(\lambda z \mid (\lambda x \mid x)z(yyz))) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda z \mid (\lambda x \mid x)z((\lambda x \mid xy)(\lambda x \mid xy)z))\ a \\
+    &\rightarrow (\lambda x \mid x)a((\lambda x \mid xy)(\lambda x \mid xy)a) \\
+    &\rightarrow a((\lambda x \mid xy)(\lambda x \mid xy)a) \\
+    &\rightarrow a(((\lambda x \mid xy)y)a) \\
+    &\rightarrow a(yya) \\
+\end{align}
+
+Applicative order reduction:
+\begin{align}
+    &(\lambda xyz \mid xz(yyz)) (\lambda x \mid x) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda x \mid (\lambda yz \mid xz(yyz))) (\lambda x \mid x) (\lambda x \mid xy)\ a \\
+    &\rightarrow  (\lambda yz \mid (\lambda x \mid x)z(yyz)) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda yz \mid z(yyz)) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda y \mid (\lambda z \mid z(yyz))) (\lambda x \mid xy)\ a \\
+    &\rightarrow (\lambda z \mid z((\lambda x \mid xy)(\lambda x \mid xy)z)) a \\
+    &\rightarrow (\lambda z \mid z(((\lambda x \mid xy)y)z)) a \\
+    &\rightarrow (\lambda z \mid z((yy)z)) a \\
+    &\rightarrow a(yya) \\
+\end{align}
+
+\subsection*{Q2.}
+\begin{enumerate}[label=(\alph*)]
+  \item Knowing XOR has the following logic
+  \begin{lstlisting}
+    XOR (a, b):
+      if a:
+        return not(b)
+      else:
+        return b
+  \end{lstlisting}
+  we can combine this with the lambda expression given for NOT and OR to obtain
+  \begin{align}
+    &x \text{ XOR } y \\
+    &\rightarrow (\lambda xy \mid x(\text{NOT } y) y)\\
+    &\rightarrow (\lambda xy \mid x(\lambda y \mid y FT) y)\\
+    &\rightarrow (\lambda xy \mid x(y FT) y)\\
+  \end{align}
+  \item \begin{itemize}
+    \item For $\text{XOR } TF$,
+    \begin{align}
+      &(\lambda xy \mid x(y FT) y)\\
+      &\rightarrow T(F FT) F \\
+      &\rightarrow T(T)F \\
+      &\rightarrow T
+    \end{align}
+    \item For $\text{XOR } TT$,
+    \begin{align}
+      &(\lambda xy \mid x(y FT) y)\\
+      &\rightarrow T(T FT) T \\
+      &\rightarrow T(F)T \\
+      &\rightarrow F
+    \end{align}
+  \end{itemize}
+\end{enumerate}
+\subsection*{Q3.}
+\begin{enumerate}[label=(\alph*)]
+  \item The result of evaluating the expression is 13 and the last context created during evaluation is $\{x \rightarrow 5, y \rightarrow 3\} \cup$ CT0
+    \begin{enumerate}[label=(\roman*)]
+      \item 
+      Evaluate (lambda (x) (lambda (y) (+ (* 2 x) y))) 5
+      \begin{itemize}
+        \item CT1 = $\{x \rightarrow 5\} \cup $ CT0
+        \item Then, [F1, CT1] = [lambda (y) (+ (* 2 x) y), CT1] where F1 = (lambda (y) (+ (* 2 x) y))
+      \end{itemize}
+      \item Evaluate outer expression with [F1, CT1]: (F1 3)
+      \begin{itemize}
+        \item CT2 = $\{y \rightarrow 3\} \cup $ CT1 = $\{x \rightarrow 5, y \rightarrow 3\} \cup$ CT0
+        \item Then, [F2, CT2] = [(+ (* 2 x) y), CT2] where F2 = (+ (* 2 x) y)
+      \end{itemize}
+      \item Evaluate [F2, CT2]: (F2)
+      \begin{itemize}
+        \item F2 evaluates to (+ (* 2 x) y) with CT2 = $\{x \rightarrow 5, y \rightarrow 3\} \cup$ CT0
+      \end{itemize}
+      \item Finally, 
+      \begin{itemize}
+        \item (+ (* 2 x) y) = (+ (* 2 5) 3) = 13
+      \end{itemize}
+    \end{enumerate}
+    \item The result of evaluating the expression is 9 and the last context created during evaluation is $\{x \rightarrow 5, y \rightarrow 3\} \cup$ CT0
+    \begin{enumerate}[label=(\roman*)]
+      \item Evaluate (lambda (x) (+ 1 x)) 
+      \begin{itemize}
+        \item CT1 = CT0
+        \item Then, [F1, CT1] = [(+ 1 x), CT1] where F1 = (+ 1 x)
+      \end{itemize}
+      \item Evaluate the second argument 8
+      \item Evaluate outer expression [F1, CT1] and 8: (F1 8)
+      \begin{itemize}
+        \item CT2 = $\{x \rightarrow 8\} \cup $ CT1 = $\{x \rightarrow 8\} \cup $ CT0 
+        \item Then,[F2, CT2] = [(+ 1 x), CT2] where F2 = (+ 1 x)
+      \end{itemize}
+      \item Evaluate [F2, CT2]: (F2)
+      \begin{itemize}
+        \item F2 evaluates to (+ 1 x) with CT2 = $\{x \rightarrow 8\} \cup $ CT0
+      \end{itemize}
+      \item Finally, 
+      \begin{itemize}
+        \item (+ 1 x) = (+ 1 8) = 9
+      \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+\end{document}
