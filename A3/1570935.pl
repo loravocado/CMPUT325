@@ -88,16 +88,6 @@ flatten([A|L],R) :- flatten(A,A1), flatten(L,L1), append(A1,L1,R).
 
 % How it works: if OP is equal, we check if the first element of the list is equal to B and if it is, we filter the rest of the list. The same applies to greatherThan and lessThan 
 
-% Testcases:
-% ?- filter([3,4,5,2,1,7,3], greaterThan, 3, W).
-% W= [4,5,7]
-
-% ?- filter([3,4,5,2,1,7,3], equal, 3, W).
-% W= [3,3]
-
-% ?- filter([3,4,5,2,1,7,3], lessThan, 3, W).
-% W= [2,1]
-
 filter_list([], _, _, []).
 filter_list([A|L], equal, N, [A|L1]) :- A == N, filter(L, equal, N, L1).
 filter_list([A|L], greaterThan, N, [A|L1]) :- A > N, filter(L, greaterThan, N, L1).
@@ -144,7 +134,7 @@ appendList(A, [[A, Count]|L], [[A, B]|L]) :- B is Count + 1.
 appendList(A, [[B, Count]|L], [[B, Count]|L1]) :- appendList(A, L, L1).
 
 % mergeSortPairs(+L1, -L2), mergePairs(+L3, +L4, -L5), splitPairs(L+6, +L7, -L8) - Helper functions for merge sort
-% What the function does: It uses merge sort to sort by letters
+% What the function does: It uses merge sort to sort by count
 
 % How it works: https://gist.github.com/Leonidas-from-XIV/4585246
 
@@ -258,11 +248,88 @@ connection(A, [B|L]):- node(A), connects(A, B), connection(A, L).
 % connects(A, L) - helper
 % What the function does: determines if there is a connection between two nodes A and B.
 
-% How it works:  The first rule connect(A, B):-edge(B, A),!. states that there is a connection between A and B if there is an edge from B to A. The second rule connect(A, B):-edge(A, B),!. states that there is a connection between A and B if there is an edge from A to B.
-
 connects(A, L) :- forall(isMember(Y,L), (edge(A,Y); edge(Y,A))).
 
 % Question 7
 
+% setIntersect(+Term, -Result) - Main function
+% What the function does: 
+% Given Term, Result should hold the same Term except that
+%     * anything between two matching q's is not changed;
+%     * any e's outside of a pair of matching q's are removed;
+%     * any letter outside a pair of matching q's is changed to the letter w.
+%     * an unmatched q will be left as is.
+% 
+% Definition of matching qs:
+%       Any string with an odd number of occurrences of q has the last occurrence of
+%       q unmatched; all the preceding ones are matched as the first and second
+%       form a pair, the 3rd and the 4th form the next pair, and so on.
+
+% How it works: If the first element of list 1 is in list 2, we recursively call setIntersect with the rest of list 1, list 2, and list 3 while appending to the output list. Otherwise, it will recursively call setIntersect with the rest of L, L2, and L3 (skipping the first element of the first list).
+
+% Testcases:
+% ?- convert([e,e,a,e,b,e],R).
+%     R = [w,w]
+% 
+% ?- convert([e,q,a,b,e,e],R).
+%     R = [q,w,w]
+% 
+% ?- convert([e,a,e,e],R).
+%     R = [w]
+% 
+% ?- convert([e,q,a,e,b,q,e,a,e],R).
+%     R = [q,a,e,b,q,w]
+% 
+% ?- convert([a,q,e,l,q,r,e,q,b,e],R).
+%     R = [w,q,e,l,q,w,q,w]
+% 
+% ?- convert([q,e,q,b,q,e,l,q,a,e],R).
+%     R = [q,e,q,w,q,e,l,q,w]
+
+convert([], []) :- !.
+
+% Remove any `e`s outside of matching `q`s
+convert([e|T], Result) :-
+    convert(T, Result),
+    !.
+
+% Found a `q`. Place everyting from the `q` to the next `q` into the result
+% and continue convert on remaining items after the closing `q`
+convert([q|T], Result) :-
+    get_quote_content_and_remainder(T, QuoteContent, Remainder),    
+    append([q|QuoteContent], L2, Result),
+    convert(Remainder, L2),
+    !.
+
+% Missing closing `q`
+convert([q|T1], [q|T2]) :-
+    convert(T1, T2),
+    !.
+
+% Convert other entries to a `w`
+convert([_|T1], [w|T2]) :-
+    convert(T1, T2),
+    !.
+
+% get_quote_content_and_remainder(+L, -QuoteContent, -Remainder) - Helper function
+% What the function does: Given L, QuoteContent will contain everything inside the quote (including the ending `q`). Remainder will contain everything after the ending quote. If the ending `q` is missing, it returns false.
+
+% Testcases:
+% ?- get_quote_content_and_remainder([a, b, c, q, x, y, z], QuoteContent, Remainder).
+%    QuoteContent = [a, b, c, q],
+%    Remainder = [x, y, z]
+% ?- get_quote_content_and_remainder([a, b, c], QuoteContent, Remainder).
+%     false
+% 
+
+get_quote_content_and_remainder([], [], _) :-
+    false,
+    !.
+
+get_quote_content_and_remainder([q|Remainder], [q], Remainder) :-
+    !.
+
+get_quote_content_and_remainder([H|T], [H|T2], Remainder) :-
+    get_quote_content_and_remainder(T, T2, Remainder).
 
 
